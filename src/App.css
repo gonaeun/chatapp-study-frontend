@@ -8,10 +8,25 @@
 }
 
 
+/* 기본 스타일 */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
 
-/* @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-} */
+/* 서버에 연결되었을 때 */
+.connected {
+  color: green;
+  font-size: 24px;
+  font-weight: bold;
+}
 
+/* 서버에 연결되지 않았을 때 */
+.disconnected {
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+}
