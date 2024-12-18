@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 // import socket from "./server";
 import { io } from "socket.io-client";
+import InputField from "./components/InputField/InputField";
 
 function App() {
 
   const socket = io("http://localhost:5002"); // 백엔드와 소켓 연결 요청
 
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState('')
   
   useEffect(()=>{
     askUserName()
@@ -27,9 +29,17 @@ function App() {
     })
   }
 
+  const sendMessage = () =>{};
+
   return (
     <div>
-      <div className="App"></div>
+      <div className="App">
+        <InputField
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
+      </div>
     </div>
   );
 }
