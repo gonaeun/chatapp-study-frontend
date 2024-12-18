@@ -6,16 +6,51 @@ import InputField from "./components/InputField/InputField";
 
 function App() {
 
-  const socket = io("http://localhost:5002"); // 백엔드와 소켓 연결 요청
+  //const socket = io("http://localhost:5002"); // 백엔드와 소켓 연결 요청
+  // let socket; // 소켓 객체를 전역으로 선언 >> 이러면 여러브라우저 열어도 하나의 소켓밖에 연결 안됨
 
+  const [socket, setSocket] = useState(null);
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('')
   
-  useEffect(()=>{
-    askUserName()
-  },[]);   // 웹사이트 처음 로딩되자마자 프롬프트 호출
-  
+  // useEffect(()=>{
+  //   socket.on('message',(message)=>{
+  //     console.log("res", message);
+  //   })
+  //   askUserName()
+  // },[]);   // 웹사이트 처음 로딩되자마자 프롬프트 호출
 
+  useEffect(() => {
+    // 소켓 객체 생성 (각 브라우저 탭에서 독립적)
+    const newSocket = io("http://localhost:5002"); // 새 소켓 연결
+    setSocket(newSocket);
+
+    newSocket.on("connect", () => {
+      console.log("Socket connected:", newSocket.id);
+    });
+
+    newSocket.on("message", (message) => {
+      console.log("res", message);
+    });
+
+    newSocket.on("disconnect", () => {
+      console.log("Socket disconnected.");
+    });
+
+    // 컴포넌트 언마운트 시 소켓 연결 해제
+    return () => {
+      newSocket.disconnect();
+    };
+  }, []); // 의존성 배열 비어있음 → 각 탭에서 한 번만 실행됨
+  
+  // socket이 초기화된 후 askUserName 호출
+  useEffect(() => {
+    if (socket) {
+      askUserName();
+    }
+  }, [socket]); // socket 상태 변경 시 실행됨
+
+  
   const askUserName=()=>{
     const userName = prompt("당신의 이름을 입력하세요")
     console.log("UserName", userName);
@@ -29,7 +64,16 @@ function App() {
     })
   }
 
-  const sendMessage = () =>{};
+  const sendMessage = (event) =>{
+    event.preventDefault();
+    if (!socket) {
+      console.error("Socket is not connected.");
+      return;
+    }
+    socket.emit("sendMessage", message, (res)=>{
+      console.log("sendMessage res",res);
+    });
+  };
 
   return (
     <div>
@@ -45,39 +89,3 @@ function App() {
 }
 
 export default App;
-
-// const App = () => {
-//   const [isConnected, setIsConnected] = useState(false);
-//   const socket = io("http://localhost:5002"); // 백엔드 주소
-
-  // useEffect(() => {
-  //   // 연결 성공 시 상태 업데이트
-  //   socket.on("connect", () => {
-  //     console.log("Connected to server with socket ID:", socket.id);
-  //     setIsConnected(true);
-  //   });
-
-  //   // 연결 해제 시 상태 업데이트
-  //   socket.on("disconnect", () => {
-  //     console.log("Disconnected from server");
-  //     setIsConnected(false);
-  //   });
-
-  //   // Cleanup
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
-//   return (
-//     <div className="container">
-//       {isConnected ? (
-//         <div className="connected">서버에 연결되었습니다!</div>
-//       ) : (
-//         <div className="disconnected">서버 연결을 확인하세요.</div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default App;
