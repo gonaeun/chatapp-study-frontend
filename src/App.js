@@ -3,6 +3,7 @@ import "./App.css";
 // import socket from "./server";
 import { io } from "socket.io-client";
 import InputField from "./components/InputField/InputField";
+import MessageContainer from "./components/MessageContainer/MessageContainer";
 
 function App() {
 
@@ -12,6 +13,9 @@ function App() {
   const [socket, setSocket] = useState(null);
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('')
+  const [messageList, setMessageList] = useState([])
+  console.log("message List", messageList);
+  
   
   // useEffect(()=>{
   //   socket.on('message',(message)=>{
@@ -31,6 +35,7 @@ function App() {
 
     newSocket.on("message", (message) => {
       console.log("res", message);
+      setMessageList((preState)=>preState.concat(message));
     });
 
     newSocket.on("disconnect", () => {
@@ -78,6 +83,7 @@ function App() {
   return (
     <div>
       <div className="App">
+        <MessageContainer messageList={messageList} user={user} />
         <InputField
           message={message}
           setMessage={setMessage}

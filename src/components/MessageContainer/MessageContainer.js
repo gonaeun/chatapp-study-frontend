@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import "./MessageContainer.css";
 import { Container } from "@mui/system";
 
+  // 프론트엔드에서 메세지 내용 보여주기 위해서
+  // 메세지 리스트랑 유저정보 받아서
+  // map으로 메세지 리스트 싹 프린트함
+  // 유저정보에 따라서 보여주는 부분이(오른쪽,왼쪽) 달라짐 + 시스템 메세지도 보여줘야함
+  // 1. 시스템 메세지인지
+  // 2. 시스템메세지가 아니라면, 유저 메세지인지 >> 오른쪽에 보여주기
+  // 3. 상대방 메세지인지 >> 왼쪽에 보여주기기
 const MessageContainer = ({ messageList, user }) => {
   return (
     <div>
