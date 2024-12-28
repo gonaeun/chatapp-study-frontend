@@ -15,6 +15,7 @@ function App() {
   const [message, setMessage] = useState('')
   const [messageList, setMessageList] = useState([])
   console.log("message List", messageList);
+  const [rooms, setRooms] = useState([]);
   
   
   // useEffect(()=>{
@@ -37,6 +38,12 @@ function App() {
       console.log("res", message);
       setMessageList((preState)=>preState.concat(message));
     });
+
+    // 방 정보 수신
+    newSocket.on("rooms",(res) => {
+      console.log("Received rooms:", res); // 서버에서 받은 방목록을 콘솔에 출력
+      setRooms(res); // 방 목록 상태를 저장
+    })
 
     newSocket.on("disconnect", () => {
       console.log("Socket disconnected.");
