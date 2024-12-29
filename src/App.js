@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 // import socket from "./server";
 import { io } from "socket.io-client";
-import InputField from "./components/InputField/InputField";
-import MessageContainer from "./components/MessageContainer/MessageContainer";
+// import InputField from "./components/InputField/InputField";
+// import MessageContainer from "./components/MessageContainer/MessageContainer";
+import RoomListPage from "./pages/RoomListPage/RoomListPage";
+import ChatPage from "./pages/ChatPage/ChatPage";
+
+
 
 function App() {
 
@@ -12,9 +17,9 @@ function App() {
 
   const [socket, setSocket] = useState(null);
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState('')
-  const [messageList, setMessageList] = useState([])
-  console.log("message List", messageList);
+  // const [message, setMessage] = useState('')
+  // const [messageList, setMessageList] = useState([])
+  // console.log("message List", messageList);
   const [rooms, setRooms] = useState([]);
   
   
@@ -34,10 +39,10 @@ function App() {
       console.log("Socket connected:", newSocket.id);
     });
 
-    newSocket.on("message", (message) => {
-      console.log("res", message);
-      setMessageList((preState)=>preState.concat(message));
-    });
+    // newSocket.on("message", (message) => {
+    //   console.log("res", message);
+    //   setMessageList((preState)=>preState.concat(message));
+    // });
 
     // 방 정보 수신
     newSocket.on("rooms",(res) => {
@@ -76,28 +81,34 @@ function App() {
     })
   }
 
-  const sendMessage = (event) =>{
-    event.preventDefault();
-    if (!socket) {
-      console.error("Socket is not connected.");
-      return;
-    }
-    socket.emit("sendMessage", message, (res)=>{
-      console.log("sendMessage res",res);
-    });
-  };
+  // const sendMessage = (event) =>{
+  //   event.preventDefault();
+  //   if (!socket) {
+  //     console.error("Socket is not connected.");
+  //     return;
+  //   }
+  //   socket.emit("sendMessage", message, (res)=>{
+  //     console.log("sendMessage res",res);
+  //   });
+  // };
 
   return (
-    <div>
-      <div className="App">
-        <MessageContainer messageList={messageList} user={user} />
-        <InputField
-          message={message}
-          setMessage={setMessage}
-          sendMessage={sendMessage}
-        />
-      </div>
-    </div>
+    // <div>
+    //   <div className="App">
+    //     <MessageContainer messageList={messageList} user={user} />
+    //     <InputField
+    //       message={message}
+    //       setMessage={setMessage}
+    //       sendMessage={sendMessage}
+    //     />
+    //   </div>
+    // </div>
+    <BrowserRouter>
+      <Routes>
+        <Route exact path="/" element={<RoomListPage rooms={rooms} socket={socket} />}/>
+        <Route exact path="/room/:id" element={<ChatPage user={user} socket={socket} />}/>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
