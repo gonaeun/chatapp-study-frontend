@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./roomListPageStyle.css";
 
 const RoomListPage = ({ rooms, socket }) => {
   const navigate = useNavigate();
+
+  // 테스트용
+  useEffect(() => {
+    console.log("Navigated to /");
+  }, []); // RoomListPage가 렌더링될 때 실행
 
   const moveToChat = (roomId) => {
     navigate(`/room/${roomId}`);
